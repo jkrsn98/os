@@ -2,88 +2,67 @@ from numpy import random
 import logging
 import threading
 import time
-# from time import time
+import sys
 
-def threadLogic(pid):
-  def thread_function(pid):
-    logging.info("PID %s: running...", pid)
-    time.sleep(random.randint(0,10))
-    release_pid(pid)
-    logging.info("PID %s: released.", pid)
-    print("----------------------------------")
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
 
-#takes the pid, allocates a timer, and when timer runs out, releases it
-  format = "%(asctime)s: %(message)s"
-  logging.basicConfig(format=format, level=logging.INFO,
-                      datefmt="%H:%M:%S")
-  x = threading.Thread(target=thread_function, args=(pid,))
-  x.start()
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
 
-# allocates the structure holding the pids, in this case just a simple array
-def allocate_map():
-  arr = []
-  return arr
 
-# generates a random pid, checks if its within range and if its already in use
-# if not in use, allocates the pid; otherwise checks next possible integer(+1)
-def allocate_pid():
-  NEW_PID = random.randint(MIN_PID, MAX_PID)
-  inserted=False
-  # print("Attempting to allocate a new process to ID %s..." %(NEW_PID))
-  if(NEW_PID>=MIN_PID and NEW_PID<=MAX_PID):
-    # print("ID within range...")
-    while inserted==False:
-      if not PIDS_IN_USE.__contains__(NEW_PID):
-        # print("ID %s not in use..."%(NEW_PID))
-        PIDS_IN_USE.append(NEW_PID)
-        threadLogic(NEW_PID) #CALLING THREADLOGIC TO FACILITATE RANDOM RELEASES
-        inserted=True
-        # print("Process established on PID %s."%(NEW_PID))
-      else:
-        # print("A PROCESS IS ALREADY RUNNING ON ID %s... ATTEMPTING %s."
-                # %(NEW_PID, NEW_PID+1))
-        NEW_PID+=1
-  else:
-    print("ERR: ID %s NOT WITHIN RANGE!" %(NEW_PID))
+class Process:
+    def __init__(self):
+        self.id = self.allocate_pid()
+        self.running_time = random.randint(0,10)
 
-# checks if pid to release is in use. if it is, releases it
-def release_pid(int_pid):
-  # print("Attempting to release ID %s..." %(int_pid))
-  if(PIDS_IN_USE.__contains__(int_pid)):
-    PIDS_IN_USE.remove(int_pid)
-    # print("ID %s released." %(int_pid))
-  else:
-    print("ERR: NO PROCESS RUNNING ON ID %s!" %(int_pid))
+    def allocate_pid(self):
+        NEW_PID = random.randint(self.MIN_PID, self.MAX_PID)
+        inserted=False
+        if(NEW_PID>=self.MIN_PID and NEW_PID<=self.MAX_PID):
+            while inserted==False:
+                if not self.PIDS_IN_USE.__contains__(NEW_PID):
+                    self.PIDS_IN_USE.append(NEW_PID)
+                    inserted=True
+                else:
+                    NEW_PID+=1
+        else:
+            print("ERR: ID %s NOT WITHIN RANGE!" %(NEW_PID))
+        return NEW_PID
 
-# sets allowed range (300, 5000)
-MIN_PID = 300
-MAX_PID = 5001
+    def release_pid(int_pid):
+        if(Process.PIDS_IN_USE.__contains__(int_pid)):
+            Process.PIDS_IN_USE.remove(int_pid)
+        else:
+            print("ERR: NO PROCESS RUNNING ON ID %s!" %(int_pid))
 
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+    def allocate_map():
+        return []
 
-# testing the functions:
+    MIN_PID = 300
+    MAX_PID = 5001
+    PIDS_IN_USE = allocate_map()
 
-# calls allocate_map():
-PIDS_IN_USE = allocate_map()
+class Thread:
+    def __init__(self):
+        running_time = random.randint(1,31)
+        pid = Process()
+        self.runProcess(pid, running_time)
+        
+    def runProcess(self, process, running_time):
+        def thread_function(pid):
+            time.sleep(running_time)
+            Process.release_pid(pid)
+            logging.info("PID %s: released.", pid)
+        format = "%(asctime)s: %(message)s"
+        logging.basicConfig(format=format, level=logging.INFO,
+                            datefmt="%H:%M:%S")
+        x = threading.Thread(target=thread_function, args=(process.id,))
+        x.start()
 
-print("PIDS_IN_USE before calling allocate_pid(): %s \n" %(PIDS_IN_USE))
-# calls allocate_pid() 5 times:
-print("Calling allocate_pid() 5 times:\n")
+print("100 threads made and running for max 30 seconds...")
 i=0
-while i!=10:
-  time.sleep(random.randint(0,10))
-  allocate_pid()
-  print("----------------------------------")
-  i+=1
-
-# # calls release_pid(1234):
-# # adding 1234 to the array just for the sake of testing release_pid() 
-# # since allocate_pid() is random 
-# print("\nPIDS_IN_USE after calling allocate_pid() 5 times: %s" %(PIDS_IN_USE))
-# print ("\nadding 1234 for testing...")
-# PIDS_IN_USE.append(1234)
-# print("\nPIDS_IN_USE before calling release_pid(1234): %s" %(PIDS_IN_USE))
-# release_pid(1234)
-# print("PIDS_IN_USE after calling release_pid(1234): %s" %(PIDS_IN_USE))
+while i!=100:
+    Thread()
+    i+=1
 
