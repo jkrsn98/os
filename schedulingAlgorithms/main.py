@@ -13,6 +13,7 @@
 import sys
 import math
 from numpy import random
+from heapq import *
 
 arr = []
 
@@ -35,3 +36,23 @@ def FCFS(arr, head):
     print('\nFCFS:\n number of movements: %s' % (count))
     
 FCFS(arr, head)
+
+def SSTF(req, head):
+    requests = req.copy()
+    count = 0
+    pos = head
+    numRequests = len(requests)
+    heap = []
+
+    while len(requests) > 0:
+        for r in requests:
+            heappush(heap, (abs(pos - r), r))
+            x = heappop(heap)[1]
+            count = count + abs(pos - x)
+            pos = x
+            requests.remove(x)
+            heap = []
+    print("\nSSTF:\n number of movements: %s" % (count))
+
+
+SSTF(arr, head)
