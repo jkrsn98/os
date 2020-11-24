@@ -56,3 +56,25 @@ def SSTF(req, head):
 
 
 SSTF(arr, head)
+
+def SCAN(req, head):
+    requests = req.copy()
+    count = 0
+    pos = head
+    end = 4999
+    start = 0
+    for i in range(pos, end + 1):
+        if i in requests:
+            count + abs(pos - i)
+            pos = i
+            requests.remove(i)
+    count = count + abs(pos - end)
+    pos = end
+    for i in range(end, start - 1, -1):
+        if i in requests:
+            count += abs(pos - i)
+            pos = i
+    print("\nSCAN:\n number of movements: %s" % (count))
+
+
+SCAN(arr, head)
