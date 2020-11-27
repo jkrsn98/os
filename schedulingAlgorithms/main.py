@@ -78,3 +78,26 @@ def SCAN(req, head):
 
 
 SCAN(arr, head)
+
+def C_SCAN(req, head):
+    requests = list(req)
+    pos = head
+    count = 0
+    end = max(requests)
+    start = min(requests)
+    for i in range(pos, end + 1):
+        if i in requests:
+            count = count + abs(pos - i)
+            pos = i
+            requests.remove(i)
+
+    #seek back to start
+    for i in range(end, start - 1, -1):
+        if i in requests:
+            count = count + abs(pos - i)
+            pos = i
+            requests.remove(i)
+    print("\nC_SCAN:\n number of movements: %s" % (count))
+
+
+C_SCAN(arr, head)
