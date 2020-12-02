@@ -123,3 +123,29 @@ def LOOK(req, head):
 
 
 LOOK(arr, head)
+
+def C_LOOK(req, head):
+    requests = req.copy()
+    pos = head
+    count = 0
+    end = max(requests)
+    start = min(requests)
+    #seek from curr_pos to max of list
+    for i in range(pos, end + 1):
+        if i in requests:
+            count = count + abs(pos - i)
+            pos = i
+            requests.remove(i)
+    count = count + abs(pos - start)
+    pos = start
+    #seek to hp from start
+    for i in range(start, head + 1):
+        if i in requests:
+            count = count + abs(pos - i)
+            pos = i
+            requests.remove(i)
+
+    print("\nC_LOOK:\n number of movements: %s" % (count))
+
+
+C_LOOK(arr, head)
