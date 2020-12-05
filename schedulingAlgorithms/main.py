@@ -15,17 +15,6 @@ import math
 from numpy import random
 from heapq import *
 
-arr = []
-
-head = int(sys.argv[1])
-
-i = 0
-while i != 1000:
-    r = random.randint(0, 5000)
-    arr.append(r)
-    i = i + 1
-
-
 def FCFS(arr, head):
     count = 0
     for i in range(len(arr)):
@@ -35,8 +24,6 @@ def FCFS(arr, head):
         head = cur
     print('\nFCFS:\n number of movements: %s' % (count))
     
-FCFS(arr, head)
-
 def SSTF(req, head):
     requests = req.copy()
     count = 0
@@ -53,10 +40,7 @@ def SSTF(req, head):
             requests.remove(x)
             heap = []
     print("\nSSTF:\n number of movements: %s" % (count))
-
-
-SSTF(arr, head)
-
+    
 def SCAN(req, head):
     requests = req.copy()
     count = 0
@@ -75,10 +59,7 @@ def SCAN(req, head):
             count += abs(pos - i)
             pos = i
     print("\nSCAN:\n number of movements: %s" % (count))
-
-
-SCAN(arr, head)
-
+    
 def C_SCAN(req, head):
     requests = list(req)
     pos = head
@@ -97,10 +78,7 @@ def C_SCAN(req, head):
             pos = i
             requests.remove(i)
     print("\nC_SCAN:\n number of movements: %s" % (count))
-
-
-C_SCAN(arr, head)
-
+    
 def LOOK(req, head):
     requests = req.copy()
     pos = head
@@ -120,17 +98,13 @@ def LOOK(req, head):
             pos = i
             requests.remove(i)
     print("\nLOOK:\n number of movements: %s" % (count))
-
-
-LOOK(arr, head)
-
+    
 def C_LOOK(req, head):
     requests = req.copy()
     pos = head
     count = 0
     end = max(requests)
     start = min(requests)
-    #seek from curr_pos to max of list
     for i in range(pos, end + 1):
         if i in requests:
             count = count + abs(pos - i)
@@ -138,7 +112,6 @@ def C_LOOK(req, head):
             requests.remove(i)
     count = count + abs(pos - start)
     pos = start
-    #seek to hp from start
     for i in range(start, head + 1):
         if i in requests:
             count = count + abs(pos - i)
@@ -146,6 +119,22 @@ def C_LOOK(req, head):
             requests.remove(i)
 
     print("\nC_LOOK:\n number of movements: %s" % (count))
+    
+    
+arr = []
 
+head = int(sys.argv[1])
 
+i = 0
+while i != 1000:
+    r = random.randint(0, 5000)
+    arr.append(r)
+    i = i + 1
+
+    
+FCFS(arr, head)
+SSTF(arr, head)
+SCAN(arr, head)
+C_SCAN(arr, head)
+LOOK(arr, head)
 C_LOOK(arr, head)
