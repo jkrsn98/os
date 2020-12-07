@@ -1,15 +1,3 @@
-# Write a program the implements 3 of the following disk-scheduling algorithms:
-# a. FCFS
-# b. SSTF
-# c. SCAN
-# d. C-SCAN
-# e. LOOK
-# f. C-LOOK
-# Your program will service a disk drive with 5,000 cylinders numbered 0-4,999.
-# The program will generate a random series of 1,000 requests and service them according to three of the
-# algorithms listed above. The program will be passed the initial position of the disk head as a parameter
-# on the command line and report the total amount of head movement by each algorithm.
-
 import sys
 import math
 from numpy import random
@@ -17,11 +5,13 @@ from heapq import *
 
 def FCFS(arr, head):
     count = 0
+    
     for i in range(len(arr)):
         cur = arr[i]
         dist = abs(cur - head)
         count = dist + count
         head = cur
+        
     print('\nFCFS:\n number of movements: %s' % (count))
     
 def SSTF(req, head):
@@ -39,6 +29,7 @@ def SSTF(req, head):
             pos = x
             requests.remove(x)
             heap = []
+            
     print("\nSSTF:\n number of movements: %s" % (count))
     
 def SCAN(req, head):
@@ -47,17 +38,21 @@ def SCAN(req, head):
     pos = head
     end = 4999
     start = 0
+    
     for i in range(pos, end + 1):
         if i in requests:
             count + abs(pos - i)
             pos = i
             requests.remove(i)
+            
     count = count + abs(pos - end)
     pos = end
+    
     for i in range(end, start - 1, -1):
         if i in requests:
             count += abs(pos - i)
             pos = i
+            
     print("\nSCAN:\n number of movements: %s" % (count))
     
 def C_SCAN(req, head):
@@ -66,6 +61,7 @@ def C_SCAN(req, head):
     count = 0
     end = max(requests)
     start = min(requests)
+    
     for i in range(pos, end + 1):
         if i in requests:
             count = count + abs(pos - i)
@@ -77,6 +73,7 @@ def C_SCAN(req, head):
             count = count + abs(pos - i)
             pos = i
             requests.remove(i)
+            
     print("\nC_SCAN:\n number of movements: %s" % (count))
     
 def LOOK(req, head):
@@ -97,6 +94,7 @@ def LOOK(req, head):
             count = count + abs(pos - i)
             pos = i
             requests.remove(i)
+            
     print("\nLOOK:\n number of movements: %s" % (count))
     
 def C_LOOK(req, head):
@@ -105,13 +103,16 @@ def C_LOOK(req, head):
     count = 0
     end = max(requests)
     start = min(requests)
+    
     for i in range(pos, end + 1):
         if i in requests:
             count = count + abs(pos - i)
             pos = i
             requests.remove(i)
+            
     count = count + abs(pos - start)
     pos = start
+    
     for i in range(start, head + 1):
         if i in requests:
             count = count + abs(pos - i)
@@ -131,7 +132,6 @@ while i != 1000:
     arr.append(r)
     i = i + 1
 
-    
 FCFS(arr, head)
 SSTF(arr, head)
 SCAN(arr, head)
