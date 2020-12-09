@@ -3,11 +3,11 @@ import math
 from numpy import random
 from heapq import *
 
-def FCFS(arr, head):
+def FCFS(req, head):
     count = 0
     
-    for i in range(len(arr)):
-        cur = arr[i]
+    for i in range(len(req)):
+        cur = req[i]
         dist = abs(cur - head)
         count = dist + count
         head = cur
@@ -16,63 +16,62 @@ def FCFS(arr, head):
     
 def SSTF(req, head):
     requests = req.copy()
-    count = 0
     pos = head
-    numRequests = len(requests)
-    heap = []
+    count = 0
 
-    while len(requests) > 0:
-        for r in requests:
-            heappush(heap, (abs(pos - r), r))
-            x = heappop(heap)[1]
-            count = count + abs(pos - x)
-            pos = x
-            requests.remove(x)
-            heap = []
-            
+    while requests:
+        closest = abs(pos - requests[0])
+        closestIndex = 0
+        for x in range(1, len(requests)):
+            if abs(pos - requests[x]) < closest:
+                closest = abs(pos - requests[x])
+                closestIndex = x
+        count += abs(pos - requests[closestIndex])
+        pos = requests[closestIndex]
+        requests.remove(pos)   
     print("\nSSTF:\n number of movements: %s" % (count))
     
 def SCAN(req, head):
     requests = req.copy()
     count = 0
     pos = head
-    end = 4999
-    start = 0
+    direction = 'r'
     
-    for i in range(pos, end + 1):
-        if i in requests:
-            count + abs(pos - i)
-            pos = i
-            requests.remove(i)
-            
-    count = count + abs(pos - end)
-    pos = end
-    
-    for i in range(end, start - 1, -1):
-        if i in requests:
-            count += abs(pos - i)
-            pos = i
+    while requests:
+        if pos in requests:
+            requests.remove(pos)
+
+            if not requests:
+                break
+        if direction == 'l' and pos > 0:
+            pos = pos - 1
+        if direction == 'r' and pos < 4998:
+            pos = pos + 1
+
+        count = count + 1
+
+        if pos == 0:
+            direction = 'r'
+        if pos == 4998:
+            direction = 'l'
             
     print("\nSCAN:\n number of movements: %s" % (count))
     
 def C_SCAN(req, head):
-    requests = list(req)
+    requests = req.copy()
     pos = head
     count = 0
-    end = max(requests)
-    start = min(requests)
-    
-    for i in range(pos, end + 1):
-        if i in requests:
-            count = count + abs(pos - i)
-            pos = i
-            requests.remove(i)
+    while requests:
+        if pos in requests:
+            requests.remove(pos)
+            if not requests:
+                break
 
-    for i in range(end, start - 1, -1):
-        if i in requests:
-            count = count + abs(pos - i)
-            pos = i
-            requests.remove(i)
+        count = count + 1
+        pos = pos + 1
+        if pos == 4998:
+            pos = 0
+            count = count + 4998
             
     print("\nC_SCAN:\n number of movements: %s" % (count))
     
