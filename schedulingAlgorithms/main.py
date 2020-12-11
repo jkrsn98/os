@@ -1,7 +1,6 @@
 import sys
 import math
 from numpy import random
-from heapq import *
 
 def FCFS(req, head):
     count = 0
@@ -28,7 +27,8 @@ def SSTF(req, head):
                 closestIndex = x
         count += abs(pos - requests[closestIndex])
         pos = requests[closestIndex]
-        requests.remove(pos)   
+        requests.remove(pos)
+        
     print("\nSSTF:\n number of movements: %s" % (count))
     
 def SCAN(req, head):
